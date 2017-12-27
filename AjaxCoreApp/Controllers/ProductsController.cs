@@ -20,10 +20,18 @@ namespace AjaxCoreApp.Controllers
         }
 
         // GET: Products
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString)
         {
-            var applicationDbContext = _context.Products.Include(p => p.Category);
-            return View(await applicationDbContext.ToListAsync());
+            ViewData["CurrentFilter"] = searchString;
+
+            var products = _context.Products.Include(p=>p.Category).Select(x => x);
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                products = products.Where(x => x.ProductName.Contains(searchString));
+            }
+            
+            return View(await products.AsNoTracking().ToListAsync());
         }
 
         // GET: Products/Details/5
