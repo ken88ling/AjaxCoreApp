@@ -39,13 +39,12 @@ namespace AjaxCoreApp.Controllers
         // GET: Products
         public async Task<IActionResult> Index(string searchTerm)
         {
-            ViewData["CurrentFilter"] = searchTerm;
 
             IEnumerable<Product> products =await _context.Products.Include(p => p.Category).ToListAsync();
 
             if (!String.IsNullOrEmpty(searchTerm))
             {
-                products = products.Where(x => x.ProductName.Contains(searchTerm));
+                products = products.Where(x => x.ProductName.ToLower().Contains(searchTerm.ToLower()));
             }
 
             if (Request.IsAjaxRequest())

@@ -11,7 +11,10 @@
 
     $.ajax(options).done(function (data) {
       var $target = $($form.attr("iajax-target"));
-      $target.replaceWith(data);
+      //$target.replaceWith(data);
+      var $newHtml = $(data);
+      $target.replaceWith($newHtml);
+      $newHtml.effect("highlight");
     });
     return false;
   };
@@ -20,11 +23,20 @@
 
 
   //Autocomplete function
+  var submitAutocompleteForm = function (event, ui) {
+    var $input = $(this);
+    $input.val(ui.item.label);
+
+    var $form = $input.parents("form:first");
+    $form.submit();
+  };
+
   var createAutocomplete = function() {
     var $input = $(this);
     
     var options = {
-      source: $input.attr("autocomplete-action")
+      source: $input.attr("autocomplete-action"),
+      select: submitAutocompleteForm
     };
     $input.autocomplete(options);
   }
