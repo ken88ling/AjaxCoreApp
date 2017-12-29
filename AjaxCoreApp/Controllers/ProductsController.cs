@@ -6,7 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using AjaxCoreApp.Data;
+using AjaxCoreApp.Extensions;
 using AjaxCoreApp.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Routing;
 
 namespace AjaxCoreApp.Controllers
 {
@@ -14,25 +18,34 @@ namespace AjaxCoreApp.Controllers
     {
         private readonly ApplicationDbContext _context;
 
+
         public ProductsController(ApplicationDbContext context)
         {
             _context = context;
         }
 
+        
         // GET: Products
-        public async Task<IActionResult> Index(string searchString)
+        public async Task<IActionResult> Index(string searchTerm)
         {
-            ViewData["CurrentFilter"] = searchString;
+            ViewData["CurrentFilter"] = searchTerm;
 
-            var products = _context.Products.Include(p=>p.Category).Select(x => x);
+            IEnumerable<Product> products =await _context.Products.Include(p => p.Category).ToListAsync();
 
-            if (!String.IsNullOrEmpty(searchString))
+            if (!String.IsNullOrEmpty(searchTerm))
             {
-                products = products.Where(x => x.ProductName.Contains(searchString));
+                products = products.Where(x => x.ProductName.Contains(searchTerm));
             }
-            
-            return View(await products.AsNoTracking().ToListAsync());
+
+            if (Request.IsAjaxRequest())
+            {
+                return PartialView("_Products", products);
+            }
+
+            //return PartialView("_Products", products);
+            return View(products);
         }
+
 
         // GET: Products/Details/5
         public async Task<IActionResult> Details(int? id)
