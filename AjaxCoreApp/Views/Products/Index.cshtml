@@ -20,10 +20,10 @@
   <div class="form-group">
     <label class="col-md-2 control-label">Find by name : </label>
     <div class="col-md-4">
-      <input type="search" name="searchTerm" value="@ViewData["currentFilter"]" class="form-control" placeholder="Searching...">
+      <input type="search" name="searchTerm" class="form-control" autocomplete-action="@Url.Action("Autocomplete")">
     </div>
     <div class="col-md-6">
-      <button class="btn btn-primary">Submit</button>
+      <button type="submit" class="btn btn-primary">Search by Name</button>
     </div>
   </div>
 </form>

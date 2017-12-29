@@ -24,7 +24,18 @@ namespace AjaxCoreApp.Controllers
             _context = context;
         }
 
-        
+        public IActionResult Autocomplete(string term)
+        {
+            var model = _context.Products.Where(r => r.ProductName.StartsWith(term))
+                .Take(10)
+                .Select(r => new
+                {
+                    label = r.ProductName
+                });
+
+            return Json(model);
+        }
+
         // GET: Products
         public async Task<IActionResult> Index(string searchTerm)
         {
