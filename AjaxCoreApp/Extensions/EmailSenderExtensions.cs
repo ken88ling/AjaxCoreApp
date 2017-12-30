@@ -5,7 +5,7 @@ using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using AjaxCoreApp.Services;
 
-namespace AjaxCoreApp.Services
+namespace AjaxCoreApp.Extensions
 {
     public static class EmailSenderExtensions
     {
